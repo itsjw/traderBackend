@@ -100,8 +100,18 @@ export default ({ config, db }) => {
 				eth: eth.result.XETHZUSD.a[0]
 			})
 		})();
+	});
 
+	async function getGeminiPrices() {
+		const btc = await axios.get('https://api.gemini.com/v1/pubticker/btcusd');
+		const eth = await axios.get('https://api.gemini.com/v1/pubticker/ethusd');
+		return {btc: btc.data.ask, eth: eth.data.ask};
+	}
 
+	api.get('/geminiPrices', (req, res) => {
+		(async () => {
+			res.json(await getGeminiPrices());
+		})();
 	});
 
 	return api;
