@@ -5,6 +5,7 @@ import Gdax from 'gdax';
 import axios from 'axios';
 import _ from 'lodash';
 import {strategy} from '../lib/util';
+const KrakenClient = require('kraken-node-api');
 
 export default ({ config, db }) => {
 	let api = Router();
@@ -83,6 +84,25 @@ export default ({ config, db }) => {
 				res.json({btc: btc.price, ltcBtc: ltcBtc.price, eth: eth.price, ltcEth: ltcEth.price});
 			});
 		});
+
+	api.get('/krakenPrices', (req, res) => {
+		const key = "";
+		const secret = "";
+		const kraken = new KrakenClient();
+
+		(async () => {
+	    var btc = await kraken.api('Ticker', { pair : 'XXBTZUSD' });
+			var ltc = await kraken.api('Ticker', { pair: 'XLTCZUSD'});
+			var eth = await kraken.api('Ticker', {pair: 'XETHZUSD'});
+			res.json({
+				btc: btc.result.XXBTZUSD.a[0],
+				ltc: ltc.result.XLTCZUSD.a[0],
+				eth: eth.result.XETHZUSD.a[0]
+			})
+		})();
+
+
+	});
 
 	return api;
 }
