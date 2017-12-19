@@ -108,9 +108,20 @@ export default ({ config, db }) => {
 		return {btc: btc.data.ask, eth: eth.data.ask};
 	}
 
+	async function getPoloniexPrices() {
+		const data = await axios.get('https://poloniex.com/public?command=returnTicker');
+		return {btc: data["USDT_BTC"].last, eth: data["USDT_ETH"].last, ltc: data["USDT_LTC"].last}
+	}
+
 	api.get('/geminiPrices', (req, res) => {
 		(async () => {
 			res.json(await getGeminiPrices());
+		})();
+	});
+
+	api.get('/poloniexPrices', (req, res) => {
+		(async () => {
+			res.json(await getPoloniexPrices());
 		})();
 	});
 
